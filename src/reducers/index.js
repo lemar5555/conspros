@@ -38,6 +38,22 @@ const entries = (entries = [], action) => {
       const entryIndex = entries.indexOf(entry);
       entries.splice(entryIndex, 1);
       return [...entries];
+    case types.CHANGE_ENTRY_TYPE:
+      const nextState = entries.map(entry => {
+        if (entry.id === action.entryId) {
+          return {
+            ...entry,
+            type: action.entryType
+          };
+        }
+        return entry;
+      });
+      const emptyEntry = nextState.find(entry => !entry.id);
+      const emptyEntryIndex = nextState.indexOf(emptyEntry);
+      nextState.splice(emptyEntryIndex, 1);
+      nextState.push(emptyEntry);
+
+      return nextState;
     default:
       return entries;
   }

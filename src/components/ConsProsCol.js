@@ -1,5 +1,58 @@
 import React, { Component } from 'react';
 import { ListGroup, ListGroupItem  } from 'reactstrap';
+import { DragSource, DropTarget } from 'react-dnd';
+import PropTypes from 'prop-types';
+
+const entrySource = {
+  beginDrag({ entryId, entryType }) {
+    return {
+      entryId,
+      entryType
+    };
+  },
+  canDrag({ entryId }) {
+    return entryId;
+  },
+  endDrag({ entryId, cahngeEntryType }, monitor) {
+    const result = monitor.getDropResult();
+    if (!result) {
+      return false;
+    }
+    cahngeEntryType({entryType: result.target, entryId});
+  }
+};
+
+function collect(connect, monitor) {
+  return {
+    connectDragSource: connect.dragSource(),
+    isDragging: monitor.isDragging()
+  };
+}
+
+const propTypes = {
+  isDragging: PropTypes.bool.isRequired,
+  connectDragSource: PropTypes.func.isRequired
+};
+
+const EntryItem = ({ index,  onChange, value, connectDragSource }) => {
+  return connectDragSource(
+    <div>
+      <ListGroupItem>
+        <span className="font-weight-bold mr-3">{index + 1}</span>
+        <input
+          onChange={onChange}
+          value={value}
+          type="text"
+          className="border-0"
+        />
+      </ListGroupItem>
+    </div>
+  )
+};
+
+EntryItem.propTypes = propTypes;
+
+const DraggableEntryItem = DragSource('EntryDraggable', entrySource, collect)(EntryItem);
 
 class ConsProsCol extends Component {
 
@@ -28,29 +81,28 @@ class ConsProsCol extends Component {
   }
 
   render() {
-    const { item } = this.props;
-    const colId = item.id;
+    const { item, connectDropTarget, changeEntryType } = this.props;
 
-    return (
+    return connectDropTarget(
       <div className="cons-pros-col">
         <h4 className="m-0 text-center p-2">{item.title}</h4>
         <ListGroup>
           {item.list.map((entry, index) => (
-            <ListGroupItem key={index}>
-              <span className="font-weight-bold mr-3">{index + 1}</span>
-              <input
-                onChange={(e) => {
-                  this.handleChange({
-                    entryType: colId,
-                    title: e.target.value,
-                    entry: entry
-                  });
-                }}
-                value={entry.title}
-                type="text"
-                className="border-0"
-              />
-            </ListGroupItem>
+            <DraggableEntryItem
+              key={index}
+              index={index}
+              value={entry.title}
+              entryId={entry.id}
+              entryType={entry.type}
+              cahngeEntryType={changeEntryType}
+              onChange={(e) => {
+                this.handleChange({
+                  entryType: entry.type,
+                  title: e.target.value,
+                  entry: entry
+                });
+              }}
+            />
           ))}
         </ListGroup>
       </div>
@@ -58,4 +110,20 @@ class ConsProsCol extends Component {
   }
 }
 
-export default ConsProsCol;
+export default DropTarget('EntryDraggable', {
+  drop({ item: { id } }) {
+    return {
+      target: id
+    }
+  },
+  canDrop({ item }, monitor) {
+    const { entryType } = monitor.getItem();
+    const targetType = item.id;
+
+    return entryType !== targetType;
+  }
+}, (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop(),
+}))(ConsProsCol);

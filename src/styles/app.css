@@ -6294,6 +6294,7 @@ body {
       height: 60vh;
       overflow-y: auto; }
       .cons-pros-container .cons-pros-wrapper .cons-pros-col ul li {
+        border-top: 0;
         border-left: 0;
         border-right: 0;
         border-radius: 0; }

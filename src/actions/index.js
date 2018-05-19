@@ -28,4 +28,9 @@ export const removeEntry = ({ entryType, entryId }) => ({
   entryId
 });
 
+export const changeEntryType = ({ entryType, entryId }) => ({
+  type: types.CHANGE_ENTRY_TYPE,
+  entryId,
+  entryType
+});
 

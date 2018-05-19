@@ -1,9 +1,9 @@
 @import '../../node_modules/bootstrap/scss/bootstrap.scss';
 
-$body-background: #e9ecee;
+$grey: #e9ecee;
 
 body {
-  background: $body-background;
+  background: $grey;
 }
 
 .cons-pros-container {
@@ -27,11 +27,11 @@ body {
       }
 
       h4 {
-        border-bottom: 1px solid;
+        border-bottom: 1px solid $black;
       }
     }
     > .cons-pros-col:first-child {
-      border-right: 1px solid $grey;
+      border-right: 1px solid $black;
     }
   }
 }

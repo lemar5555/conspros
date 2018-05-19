@@ -1,61 +1,29 @@
 import React, { Component } from 'react';
-import { ListGroup, ListGroupItem  } from 'reactstrap';
-import { DragSource, DropTarget } from 'react-dnd';
-import PropTypes from 'prop-types';
+import { ListGroup  } from 'reactstrap';
+import { DropTarget } from 'react-dnd';
+import DraggableEntryItem from './DraggableEntryItem';
 
-const entrySource = {
-  beginDrag({ entryId, entryType }) {
+const entryDropTarget = {
+  drop({ item: { id } }) {
     return {
-      entryId,
-      entryType
-    };
-  },
-  canDrag({ entryId }) {
-    return entryId;
-  },
-  endDrag({ entryId, cahngeEntryType }, monitor) {
-    const result = monitor.getDropResult();
-    if (!result) {
-      return false;
+      target: id
     }
-    cahngeEntryType({entryType: result.target, entryId});
+  },
+  canDrop({ item }, monitor) {
+    const { entryType } = monitor.getItem();
+    const targetType = item.id;
+
+    return entryType !== targetType;
   }
 };
 
-function collect(connect, monitor) {
-  return {
-    connectDragSource: connect.dragSource(),
-    isDragging: monitor.isDragging()
-  };
-}
-
-const propTypes = {
-  isDragging: PropTypes.bool.isRequired,
-  connectDragSource: PropTypes.func.isRequired
-};
-
-const EntryItem = ({ index,  onChange, value, connectDragSource }) => {
-  return connectDragSource(
-    <div>
-      <ListGroupItem>
-        <span className="font-weight-bold mr-3">{index + 1}</span>
-        <input
-          onChange={onChange}
-          value={value}
-          type="text"
-          className="border-0"
-        />
-      </ListGroupItem>
-    </div>
-  )
-};
-
-EntryItem.propTypes = propTypes;
-
-const DraggableEntryItem = DragSource('EntryDraggable', entrySource, collect)(EntryItem);
+const collect = (connect, monitor) => ({
+  connectDropTarget: connect.dropTarget(),
+  isOver: monitor.isOver(),
+  canDrop: monitor.canDrop(),
+});
 
 class ConsProsCol extends Component {
-
   componentDidMount() {
     this.props.addEmptyEntry({ entryType: this.props.item.id });
   }
@@ -110,20 +78,4 @@ class ConsProsCol extends Component {
   }
 }
 
-export default DropTarget('EntryDraggable', {
-  drop({ item: { id } }) {
-    return {
-      target: id
-    }
-  },
-  canDrop({ item }, monitor) {
-    const { entryType } = monitor.getItem();
-    const targetType = item.id;
-
-    return entryType !== targetType;
-  }
-}, (connect, monitor) => ({
-  connectDropTarget: connect.dropTarget(),
-  isOver: monitor.isOver(),
-  canDrop: monitor.canDrop(),
-}))(ConsProsCol);
+export default DropTarget('EntryDraggable', entryDropTarget, collect)(ConsProsCol);

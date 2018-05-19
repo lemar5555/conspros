@@ -1,0 +1,45 @@
+{
+  "name": "conspros",
+  "version": "0.1.0",
+  "private": false,
+  "license": "MIT",
+  "description": "Just ConsPros",
+  "homepage": "",
+  "dependencies": {
+    "bootstrap": "^4.1.1",
+    "gh-pages": "^1.1.0",
+    "husky": "^0.14.3",
+    "lint-staged": "^7.0.5",
+    "lodash": "^4.17.10",
+    "node-sass-chokidar": "^1.2.2",
+    "npm-run-all": "^4.1.2",
+    "prettier": "^1.12.1",
+    "promise": "^8.0.1",
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "react-redux": "^5.0.7",
+    "react-scripts": "1.1.4",
+    "reactstrap": "^6.0.1",
+    "redux": "^4.0.0",
+    "redux-thunk": "^2.2.0"
+  },
+  "lint-staged": {
+    "src/**/*.{js,jsx,json,css}": [
+      "prettier --single-quote --write",
+      "git add"
+    ]
+  },
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build",
+    "precommit": "lint-staged",
+    "build-css": "node-sass-chokidar src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build-js": "react-scripts build",
+    "build": "npm-run-all build-css build-js",
+    "test": "react-scripts test --env=jsdom",
+    "eject": "react-scripts eject"
+  }
+}

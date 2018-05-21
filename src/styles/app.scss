@@ -19,10 +19,15 @@ body {
         overflow-y: auto;
 
         li {
+          display: flex;
+          justify-content: space-around;
           border-top: 0;
           border-left: 0;
           border-right: 0;
           border-radius: 0;
+          input {
+            width: 93%;
+          }
         }
       }
 

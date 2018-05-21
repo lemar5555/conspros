@@ -6294,10 +6294,14 @@ body {
       height: 60vh;
       overflow-y: auto; }
       .cons-pros-container .cons-pros-wrapper .cons-pros-col ul li {
+        display: flex;
+        justify-content: space-around;
         border-top: 0;
         border-left: 0;
         border-right: 0;
         border-radius: 0; }
+        .cons-pros-container .cons-pros-wrapper .cons-pros-col ul li input {
+          width: 93%; }
     .cons-pros-container .cons-pros-wrapper .cons-pros-col h4 {
       border-bottom: 1px solid #000; }
   .cons-pros-container .cons-pros-wrapper > .cons-pros-col:first-child {
